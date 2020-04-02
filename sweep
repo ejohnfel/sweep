@@ -41,7 +41,7 @@ function Usage()
 # Trap ctrl-c to be sure script does not go off the reservation and keep going after you press ctrl-c
 trap "echo -e\"\nStopping early\"; exit 0" sigint
 
-while getopts "hdb:e:p:" opt; do
+while getopts "hdntfs:b:e:p:" opt; do
 	case ${opt} in
 	"h") Usage; exit 0 ;;
 	"d") DEBUG=1 ;;
