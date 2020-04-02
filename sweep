@@ -71,12 +71,12 @@ for ((node=${start}; node < ${stop}; ++node)); do
 			elif [ ! "${port}" = "" ]; then
 				# Port PING
 				nping --tcp -p ${port} ${prefix}.${node}
-			else
-				echo -e "KEWL : ${output} (aka ${prefix}.${node}) has a reverse DNS entry"
 			fi
 		elif [ ${TRACERT} -gt 0 ]; then
 				# Trace route
 				traceroute ${prefix}.${node}
+		else
+				echo -e "KEWL : ${output} (aka ${prefix}.${node}) has a reverse DNS entry"
 		fi
 	else
 		echo -e "BUMMER : ${prefix}.${node} appears to have no reverse DNS registration"
