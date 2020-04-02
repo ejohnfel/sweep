@@ -1,0 +1,60 @@
+#!/bin/bash
+
+DEBUG=0
+prefix=129.49.31
+start=0
+stop=255
+
+function DebugMsg()
+{
+	[ ${DEBUG} -gt 0 ] && Msg "$(date) : ${*}"
+}
+
+function Msg()
+{
+	echo -e "${*}"
+}
+
+function Usage()
+{
+	echo -e "sweep\n\nSweep DNS for a subnet"
+	echo -e "========================="
+	echo -e "-h\t\tThis menu"
+	echo -e "-p [prefix]\tSubnet prefix (i.e. 129.49.31)"
+	echo -e "-b [begin]\tNode to begin on (i.e. 3)"
+	echo -e "-e [end]\tNode to end on (i.e. 240)"
+	echo -e "\n\nEx: sweep -p 129.49.31 -b 16 -e 200\n\nWill sweep through 129.49.31.16 to 129.49.31.200"
+}
+
+#
+# Main Loop
+#
+
+# Trap ctrl-c to be sure script does not go off the reservation and keep going after you press ctrl-c
+trap "echo -e\"\nStopping early\"; exit 0" sigint
+
+while getopts "hdb:e:p:" opt; do
+	case ${opt} in
+	"h") Usage; exit 0 ;;
+	"d") DEBUG=1 ;;
+	"b") start="${OPTARG}" ;;
+	"e") stop="${OPTARG}" ;;
+	"p") prefix="${OPTARG}" ;;
+	esac
+done
+
+for ((node=${start}; node < ${stop}; ++node)); do
+	output=$(nslookup ${prefix}.${node} | grep "name = ")
+
+	if [[ ${output} =~ name\ =\  ]]; then
+		echo -n "${output} (aka ${prefix}.${node}) is "
+
+		if ping -q -c 1 -w 1 ${prefix}.${node} > /dev/null; then
+			echo "alive"
+		else
+			echo "not responding"
+		fi
+	else
+		echo -e "BUMMER : ${prefix}.${node} appears to have no reverse DNS registration"
+	fi
+done
