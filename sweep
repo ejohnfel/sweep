@@ -62,15 +62,17 @@ for ((node=${start}; node < ${stop}; ++node)); do
 		if [ ${PING} -gt 0 ]; then
 			if [ "${port}" = "" ]; then
 				# Ok Regular PING
-				echo -n "${output} (aka ${prefix}.${node}) is "
+				echo -n "KEWL : ${output} (aka ${prefix}.${node}) is "
 				if ping -q -c 1 -w 1 ${prefix}.${node} > /dev/null; then
 					echo "alive"
 				else
 					echo "not responding"
 				fi
-			else
+			elif [ ! "${port}" = "" ]; then
 				# Port PING
 				nping --tcp -p ${port} ${prefix}.${node}
+			else
+				echo -e "KEWL : ${output} (aka ${prefix}.${node}) has a reverse DNS entry"
 			fi
 		elif [ ${TRACERT} -gt 0 ]; then
 				# Trace route
