@@ -60,7 +60,7 @@ for ((node=${start}; node < ${stop}; ++node)); do
 
 	if [[ ${output} =~ name\ =\  ]]; then
 		if [ ${PING} -gt 0 ]; then
-			if [ ${port} = "" ]; then
+			if [ "${port}" = "" ]; then
 				# Ok Regular PING
 				echo -n "${output} (aka ${prefix}.${node}) is "
 				if ping -q -c 1 -w 1 ${prefix}.${node} > /dev/null; then
